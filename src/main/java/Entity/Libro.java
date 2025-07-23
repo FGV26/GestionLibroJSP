@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Libro {
 
-    private String idLibro;
+    private String id;
     private String titulo;
     private String autor;
 
@@ -14,16 +14,16 @@ public class Libro {
     public Libro() { }
 
     public Libro(String idLibro, String titulo, String autor) {
-        this.idLibro = idLibro;
+        this.id = idLibro;
         this.titulo  = titulo;
         this.autor   = autor;
     }
 
     public String getIdLibro() {
-        return idLibro;
+        return id;
     }
     public void setIdLibro(String idLibro) {
-        this.idLibro = idLibro;
+        this.id = idLibro;
     }
 
     public String getTitulo() {
