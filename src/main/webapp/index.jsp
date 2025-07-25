@@ -41,7 +41,7 @@
           })
           .then(data => {
             document.getElementById("resultadoAgregarLibro").innerText =
-              `Libro agregado: [${data.idLibro}]-${data.titulo} - ${data.autor}`; // Mostrar ID del libro agregado
+              `Libro agregado: [${data.id}]-${data.title} - ${data.author}`; // Mostrar ID del libro agregado
           })
           .catch(err => {
             document.getElementById("resultadoAgregarLibro").innerText = `${err.message}`; // Mostrar mensaje de error
@@ -63,7 +63,7 @@
           })
           .then(data => {
             document.getElementById("resultadoBuscarLibro").innerText =
-              `Libro encontrado: [${data.idLibro}] ${data.titulo} - ${data.autor}`; // Mostrar ID del libro encontrado
+              `Libro encontrado: [${data.id}] ${data.title} - ${data.author}`; // Mostrar ID del libro encontrado
           })
           .catch(err => {
             document.getElementById("resultadoBuscarLibro").innerText = `${err.message}`; // Mostrar mensaje de error

@@ -1,6 +1,7 @@
 package Controllers;
 
 import Dao.LibroDAO;
+import Dto.LibroDTO;
 import Entity.Libro;
 import Services.IncrementID;
 import com.google.gson.Gson;
@@ -31,9 +32,10 @@ public class LibroController extends HttpServlet {
 
         try {
             if (idParam != null && !idParam.isEmpty()) {
-                Libro libro = libroDAO.findById(idParam); // ahora recibe String
+                Libro libro = libroDAO.findById(idParam);
                 if (libro != null) {
-                    out.print(gson.toJson(libro));
+                    LibroDTO libroDTO = new LibroDTO(libro);
+                    out.print(gson.toJson(libroDTO));
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND, "Libro no encontrado");
                 }
@@ -67,14 +69,13 @@ public class LibroController extends HttpServlet {
         libro.setTitulo(titulo);
         libro.setAutor(autor);
 
-        System.out.println("Libro a guardar: " + libro.getIdLibro() + ", " + libro.getTitulo() + ", " + libro.getAutor());
-
         try {
             libroDAO.addLibro(libro);
             response.setContentType("application/json; charset=UTF-8");
             PrintWriter out = response.getWriter();
-            System.out.println(gson.toJson(libro));
-            out.print(gson.toJson(libro));
+            LibroDTO libroDTO = new LibroDTO(libro);
+            //System.out.println(gson.toJson(libroDTO));
+            out.print(gson.toJson(libroDTO));
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar libro");
         }
