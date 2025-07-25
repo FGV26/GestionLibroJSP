@@ -7,18 +7,32 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class LibroDAO {
+public class LibroDAO  implements ILibroDao {
 
-    private static final String ADD_LIBRO = "INSERT INTO libro (titulo, autor) VALUES (?, ?)";
+    private static final String ADD_LIBRO = "INSERT INTO Libro (id_libro,titulo, autor) VALUES (?, ?,?)";
     private static final String fIND_LIBRO_BY_ID = "SELECT * FROM libro WHERE id = ?";
 
     private Conexion cn = new Conexion();
     private Connection con;
     private PreparedStatement ps;
     private ResultSet rs;
+
+    public boolean addLibro(Libro libro) throws SQLException {
+        boolean isAdded = false;
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(ADD_LIBRO);
+            ps.setString(1, libro.getIdLibro());
+            ps.setString(1, libro.getTitulo());
+            ps.setString(2, libro.getAutor());
+            isAdded = ps.executeUpdate() > 0;
+        } finally {
+            cn.close(ps);
+            cn.close(con);
+        }
+        return isAdded;
+    }
 
     public Libro findById(int idLibro) throws SQLException {
         Libro libro = null;
@@ -29,7 +43,7 @@ public class LibroDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 libro = new Libro();
-                libro.setIdLibro(rs.getString("id"));
+                libro.setIdLibro(rs.getString("id_libro"));
                 libro.setTitulo(rs.getString("titulo"));
                 libro.setAutor(rs.getString("autor"));
             }
@@ -39,19 +53,5 @@ public class LibroDAO {
             cn.close(con);
         }
         return libro;
-    }
-    public boolean addLibro(Libro libro) throws SQLException {
-        boolean isAdded = false;
-        try {
-            con = cn.getConnection();
-            ps = con.prepareStatement(ADD_LIBRO);
-            ps.setString(1, libro.getTitulo());
-            ps.setString(2, libro.getAutor());
-            isAdded = ps.executeUpdate() > 0;
-        } finally {
-            cn.close(ps);
-            cn.close(con);
-        }
-        return isAdded;
     }
 }

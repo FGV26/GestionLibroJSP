@@ -4,7 +4,7 @@ package Entity;
 import java.util.List;
 
 
-public class Socio {
+public class  Socio {
 
     private String idSocio;
     private String nombre;
