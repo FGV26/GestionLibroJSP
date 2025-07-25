@@ -1,34 +1,27 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@page import="DTO.*"%>
-<%@page import="java.util.List"%>
-
-<!DOCTYPE html>
 <html>
+<head>
+    <title>Sistema de Biblioteca</title>
+</head>
 <body>
-<h1>Welcome to the JSP Page</h1>
-<h2>Registrar Libro</h2>
-<form action="controller/libro" method="post">
-    <input type="hidden" name="accion" value="registrar">
+    <h2>Agregar Libro</h2>
+    <form id="formAgregarLibro">
+      <input type="text" id="titulo" placeholder="Título del libro" required>
+      <input type="text" id="autor" placeholder="Autor del libro" required>
+      <button type="submit">Agregar</button>
+    </form>
+    <div id="resultadoAgregarLibro"></div>
 
-    <label for="titulo">Título:</label>
-    <input type="text" id="titulo" name="titulo" required><br><br>
+    <hr>
 
-    <label for="autor">Autor:</label>
-    <input type="text" id="autor" name="autor" required><br><br>
+    <h2>Buscar Libro por ID</h2>
+    <form id="formBuscarLibro">
+      <input type="number" id="buscarIdLibro" placeholder="ID del libro" required>
+      <button type="submit">Buscar</button>
+    </form>
+    <div id="resultadoBuscarLibro"></div>
 
-    <button type="submit">Registrar Libro</button>
-</form>
-
-<h2>Buscar Libro por ID</h2>
-<form action="controller/libro" method="get">
-    <input type="hidden" name="accion" value="buscar">
-
-    <label for="id">ID del Libro:</label>
-    <input type="number" id="id" name="id" required><br><br>
-
-    <button type="submit">Buscar Libro</button>
-</form>
-
+    <script src="index.js"></script>
 </body>
 </html>

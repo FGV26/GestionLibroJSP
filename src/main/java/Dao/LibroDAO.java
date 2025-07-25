@@ -8,10 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LibroDAO  implements ILibroDao {
-
-    private static final String ADD_LIBRO = "INSERT INTO Libro (id_libro,titulo, autor) VALUES (?, ?,?)";
-    private static final String fIND_LIBRO_BY_ID = "SELECT * FROM libro WHERE id = ?";
+public class LibroDAO {
+    private static final String ADD_LIBRO = "INSERT INTO Libro (titulo, autor) VALUES (?, ?)";
+    private static final String FIND_LIBRO_BY_ID = "SELECT * FROM Libro WHERE id_libro = ?";
 
     private Conexion cn = new Conexion();
     private Connection con;
@@ -23,7 +22,6 @@ public class LibroDAO  implements ILibroDao {
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(ADD_LIBRO);
-            ps.setString(1, libro.getIdLibro());
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getAutor());
             isAdded = ps.executeUpdate() > 0;
@@ -38,7 +36,7 @@ public class LibroDAO  implements ILibroDao {
         Libro libro = null;
         try {
             con = cn.getConnection();
-            ps = con.prepareStatement(fIND_LIBRO_BY_ID);
+            ps = con.prepareStatement(FIND_LIBRO_BY_ID);
             ps.setInt(1, idLibro);
             rs = ps.executeQuery();
             if (rs.next()) {

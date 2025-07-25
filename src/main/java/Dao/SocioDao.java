@@ -13,6 +13,7 @@ public class SocioDao implements ISocioDao{
     private static final String addSocio = "INSERT INTO socio (id_socio, nombre, correo) VALUES (?, ?, ?)";
     private static final String removeSocio= "DELETE FROM socio WHERE id_socio = ?";
     private static final String findSocioById = "SELECT * FROM socio WHERE id_socio = ?";
+    private static final String findSocioByCorreo = "SELECT * FROM socio WHERE correo = ?";
 
     private Conexion cn = new Conexion();
     private Connection con;
