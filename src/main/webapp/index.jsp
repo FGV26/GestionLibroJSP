@@ -4,24 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Sistema de Biblioteca</title>
+    <link rel="stylesheet" href="css/styles.css">
+
 </head>
 <body>
-    <h2>Agregar Libro</h2>
-    <form id="formAgregarLibro">
-      <input type="text" id="titulo" placeholder="Título del libro" required>
-      <input type="text" id="autor" placeholder="Autor del libro" required>
-      <button type="submit">Agregar</button>
-    </form>
-    <div id="resultadoAgregarLibro"></div>
+    <div class="container">
+            <h2>Agregar Libro</h2>
+            <form id="formAgregarLibro">
+              <input type="text" id="titulo" placeholder="Título del libro" required>
+              <input type="text" id="autor" placeholder="Autor del libro" required>
+              <button type="submit">Agregar</button>
+            </form>
+            <div id="resultadoAgregarLibro" class="resultado-mensaje"></div>
 
-    <hr>
+            <hr>
 
-    <h2>Buscar Libro por ID</h2>
-    <form id="formBuscarLibro">
-      <input type="input" id="buscarIdLibro" placeholder="ID del libro" required>
-      <button type="submit">Buscar</button>
-    </form>
-    <div id="resultadoBuscarLibro"></div>
+            <h2>Buscar Libro por ID</h2>
+            <form id="formBuscarLibro">
+              <input type="input" id="buscarIdLibro" placeholder="ID del libro" required>
+              <button type="submit">Buscar</button>
+            </form>
+            <div id="resultadoBuscarLibro" class="resultado-mensaje"></div>
+
+            <a href="home.jsp" class="back-to-home">Volver al Inicio</a>
+        </div>
 
     <script>
      document.getElementById("formAgregarLibro").addEventListener("submit", function (e) {

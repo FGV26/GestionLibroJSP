@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LibroDAO implements ILibroDao {
+public class LibroDao implements ILibroDao {
 
     private static final String ADD_LIBRO = "INSERT INTO Libro (id_libro,titulo, autor) VALUES (?,?,?)";
     private static final String FIND_LIBRO_BY_ID = "SELECT * FROM Libro WHERE id_libro = ?";

@@ -15,6 +15,7 @@ public class PrestamoDao implements IPrestamoDao {
 
     private static final String addSocio = "Insert INTO prestamo (id_prestamo, id_libro, id_socio, fecha_prestamo, fecha_devolucion, fecha_retorno) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String allPrestamos= "Select * FROM prestamo";
+    private static final String GET_LAST_ID = "SELECT id_prestamo FROM prestamo ORDER BY id_prestamo DESC LIMIT 1";
 
     private Conexion cn = new Conexion();
     private Connection con;
@@ -66,4 +67,23 @@ public class PrestamoDao implements IPrestamoDao {
         }
         return prestamos;
     }
+
+    @Override
+    public String getLastId() throws SQLException {
+        String lastId = null;
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(GET_LAST_ID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                lastId = rs.getString("id_prestamo");
+            }
+        } finally {
+            cn.close(rs);
+            cn.close(ps);
+            cn.close(con);
+        }
+        return lastId;
+    }
+
 }

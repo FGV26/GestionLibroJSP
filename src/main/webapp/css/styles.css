@@ -1,0 +1,159 @@
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; /* Fuentes modernas y limpias */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Fondo Degradado Principal - Tomado de las imágenes de ejemplo */
+    background: linear-gradient(135deg, #a77bff 0%, #7b68ee 100%); /* Morado claro a un azul-morado */
+    color: #333; /* Texto principal oscuro para mejor lectura sobre claro */
+    line-height: 1.6;
+    overflow: hidden; /* Evita barras de desplazamiento si hay degradados */
+    padding: 15px; /* Pequeño padding general para asegurar que no se pegue a los bordes en móviles */
+    box-sizing: border-box; /* Incluir padding en el ancho/alto total del elemento */
+}
+
+.container {
+    /* Tamaño Mediano: Un balance entre el compacto de móvil y un ancho de escritorio */
+    max-width: 550px; /* Reducido de 600px a 550px para un tamaño más mediano */
+    width: 90%; /* Responsivo, ocupa el 90% del ancho disponible */
+    background-color: rgba(255, 255, 255, 0.95); /* Fondo blanco semi-transparente para la tarjeta */
+    padding: 35px 30px; /* Padding interno, ligeramente ajustado */
+    border-radius: 20px; /* Bordes muy redondeados, coherente con las imágenes */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Sombra definida */
+    text-align: center;
+    backdrop-filter: blur(5px); /* Efecto de desenfoque detrás del contenedor (moderno) */
+    -webkit-backdrop-filter: blur(5px); /* Para compatibilidad con Safari */
+}
+
+/* Estilos de Títulos */
+h1 { /* Usado en home.jsp */
+    font-size: 2em; /* Reducido de 2.2em a 2em para tamaño mediano */
+    color: #4a4a4a; /* Un gris oscuro profundo */
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+h2 { /* Usado en libros.jsp (y potencialmente otros, como "Crear Cuenta" en la imagen) */
+    font-size: 1.5em; /* Reducido de 1.8em a 1.5em para tamaño mediano */
+    color: #4a4a4a; /* Mantener un gris oscuro para coherencia con h1 */
+    margin-bottom: 25px; /* Espacio debajo del título */
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Estilos de Formularios */
+form {
+    margin-bottom: 25px; /* Espacio entre formularios, ligeramente reducido */
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Separador sutil */
+}
+form:last-of-type {
+    border-bottom: none; /* Elimina el borde del último formulario */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Estilos para campos de entrada (Input Fields) */
+input[type="text"],
+input[type="input"] { /* Se mantiene input type="input" ya que lo tenías, pero idealmente debería ser text/number */
+    width: calc(100% - 24px); /* Ancho completo menos padding */
+    padding: 12px; /* Mismo padding, tamaño adecuado para mediano */
+    margin-bottom: 15px;
+    border: 1px solid #d0d0d0; /* Borde suave */
+    border-radius: 8px; /* Bordes redondeados */
+    font-size: 0.95em; /* Ligeramente más pequeño para inputs */
+    color: #333;
+    background-color: #f9f9f9; /* Fondo muy claro para el input */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input[type="text"]:focus,
+input[type="input"]:focus {
+    border-color: #7b68ee; /* Borde al enfocar, coincide con el degradado */
+    box-shadow: 0 0 0 3px rgba(123, 104, 238, 0.2); /* Sombra suave al enfocar */
+    outline: none; /* Eliminar el outline por defecto del navegador */
+}
+input::placeholder {
+    color: #999;
+    opacity: 0.8;
+}
+
+/* Estilos para Botones (Generales, como los de login/signup) */
+button[type="submit"],
+.menu-item { /* Aplicado a los botones de form y a los enlaces del menú en home.jsp */
+    display: block;
+    width: 100%;
+    /* Degradado para los botones - Coherente con la imagen */
+    background: linear-gradient(45deg, #8a2be2 0%, #6a5acd 100%); /* Degradado morado más oscuro */
+    color: #ffffff; /* Texto blanco en los botones */
+    padding: 15px 20px; /* Ajustado el padding para tamaño mediano */
+    border: none;
+    border-radius: 12px; /* Bordes redondeados para los botones */
+    font-size: 1em; /* Reducido de 1.1em a 1em para tamaño mediano */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra para botones */
+    margin-top: 10px; /* Espacio superior para el botón */
+    text-decoration: none; /* Para .menu-item */
+    box-sizing: border-box; /* Incluir padding en el ancho/alto */
+}
+
+button[type="submit"]:hover,
+.menu-item:hover {
+    transform: translateY(-2px); /* Ligeramente más sutil que -3px */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); /* Sombra ligeramente reducida al pasar el ratón */
+    background: linear-gradient(45deg, #7a2bdc 0%, #5a4bbf 100%); /* Ligeramente más oscuro en hover */
+}
+
+button[type="submit"]:active,
+.menu-item:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #6a2bc2 0%, #4a3ba5 100%); /* Aún más oscuro al hacer clic */
+}
+
+/* Estilo para los mensajes de resultado */
+.resultado-mensaje {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9em; /* Ligeramente más pequeño para mensajes */
+    color: #4a4a4a;
+    background-color: #f0f0f0; /* Fondo claro para los mensajes */
+    border: 1px solid #e0e0e0;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Asegurar que el texto esté centrado si ocupa varias líneas */
+}
+
+/* Estilo para la línea divisoria */
+hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1); /* Línea más sutil */
+    margin: 30px auto; /* Reducido a 30px de 40px */
+    width: 70%; /* Ancho de la línea, ligeramente reducido */
+}
+
+/* Botón para volver al home */
+.back-to-home {
+    display: inline-block;
+    margin-top: 25px; /* Reducido de 30px */
+    padding: 10px 20px;
+    background-color: #c7a7e1; /* Un morado claro del degradado */
+    color: #3a2a47; /* Texto oscuro para el botón de regreso */
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.85em; /* Ligeramente más pequeño */
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.back-to-home:hover {
+    background-color: #b091d3;
+    transform: translateY(-1px);
+}

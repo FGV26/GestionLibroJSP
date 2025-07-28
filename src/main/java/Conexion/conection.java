@@ -1,7 +1,5 @@
 package Conexion;
 
-import Dao.LibroDAO;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 

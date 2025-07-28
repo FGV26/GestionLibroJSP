@@ -1,10 +1,11 @@
 package Controllers;
 
-import Dao.LibroDAO;
+import Dao.LibroDao;
 import Dto.LibroDTO;
 import Entity.Libro;
 import Services.IncrementID;
 import com.google.gson.Gson;
+import util.EntityType;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,12 +13,11 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/api/libros")
 public class LibroController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final LibroDAO libroDAO = new LibroDAO();
+    private final LibroDao libroDAO = new LibroDao();
     private final Gson gson = new Gson();
 
     @Override
@@ -65,7 +65,11 @@ public class LibroController extends HttpServlet {
         }
 
         Libro libro = new Libro();
-        libro.setIdLibro(incrementID.generateNewId());
+        try {
+            libro.setIdLibro(incrementID.generateNewId(EntityType.LIBRO));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         libro.setTitulo(titulo);
         libro.setAutor(autor);
 

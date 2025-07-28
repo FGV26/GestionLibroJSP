@@ -11,4 +11,5 @@ public interface IPrestamoDao {
     // Implementar metodos necesarios para la interfaz IPrestamoDao
     boolean addPrestamo(Prestamo prestamo) throws SQLException;
     List<Prestamo> allPrestamos() throws SQLException;
+    String getLastId() throws SQLException;
 }

@@ -1,19 +1,27 @@
-package Entity;
+package Dto;
 
-public class  Socio {
+import Entity.Prestamo;
+import Entity.Socio;
+
+import java.util.List;
+
+public class SocioDTO {
+    //Data transport Object, solo transportara la informacionn que vera el usuario
 
     private String idSocio;
     private String nombre;
     private String correo;
 
-    public Socio() { }
-
-    public Socio(String idSocio, String nombre, String correo) {
-        this.idSocio = idSocio;
-        this.nombre  = nombre;
-        this.correo  = correo;
+    public SocioDTO(Socio socio) {
+        this.idSocio = socio.getIdSocio();
+        this.nombre = socio.getNombre();
+        this.correo = socio.getCorreo();
     }
 
+    public SocioDTO() {
+    }
+
+    // --- Getters y Setters ---
     public String getIdSocio() {
         return idSocio;
     }
@@ -34,4 +42,7 @@ public class  Socio {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+
+
 }
