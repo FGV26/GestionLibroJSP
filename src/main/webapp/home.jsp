@@ -16,7 +16,7 @@
         <div class="menu-grid">
             <a href="index.jsp" class="menu-item">Gestión de Libros</a>
             <a href="socio.jsp" class="menu-item">Gestión de Socios</a>
-            <a href="prestamos.jsp" class="menu-item">Gestión de Préstamos</a>
+            <a href="prestamo.jsp" class="menu-item">Gestión de Préstamos</a>
         </div>
 
     </div>

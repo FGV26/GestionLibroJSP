@@ -57,8 +57,6 @@ public class LibroController extends HttpServlet {
 
         IncrementID incrementID = new IncrementID();
 
-        System.out.println("Datos recibidos: titulo=" + titulo + ", autor=" + autor);
-
         if (titulo == null || autor == null || titulo.isEmpty() || autor.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan datos");
             return;
