@@ -2,16 +2,20 @@ package Dto;
 
 import Entity.Libro;
 
+import java.util.Date;
+
 public class LibroDTO {
 
     private String id;
     private String title;
     private String author;
+    private Date creationDate;
 
     public LibroDTO(Libro libro) {
         this.id = libro.getIdLibro();
         this.title = libro.getTitulo();
         this.author = libro.getAutor();
+        this.creationDate = libro.getFechaCreacion();
     }
 
     public String getId() {
@@ -36,6 +40,14 @@ public class LibroDTO {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }
 

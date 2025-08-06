@@ -13,6 +13,8 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/api/socios")
 public class SocioController extends HttpServlet {
@@ -20,83 +22,155 @@ public class SocioController extends HttpServlet {
     private final SocioDao socioDAO = new SocioDao();
     private final Gson gson = new Gson();
 
-    // GET para obtener un socio por ID
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        String action = request.getParameter("action");
+        if (action == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no especificada");
+            return;
+        }
 
-        String idParam = request.getParameter("id");
-
-        try {
-            if (idParam != null && !idParam.isEmpty()) {
-                Socio socio = socioDAO.findById(idParam);
-                if (socio != null) {
-                    SocioDTO socioDTO = new SocioDTO(socio);
-                    out.print(gson.toJson(socioDTO));
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Socio no encontrado");
-                }
-            } else {
-                // Si no se proporciona ID en un GET, se asume que no hay una acción por defecto para "listar todo"
-                // como no quieres listar por ahora, esta parte manejaría el caso de ID nulo/vacío
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parámetro 'id' requerido");
-            }
-        } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error de base de datos: " + e.getMessage());
-            e.printStackTrace();
+        switch (action) {
+            case "delete":
+                eliminarSocio(request, response);
+                break;
+            case "ListarTodo":
+                listarSocios(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no válida");
         }
     }
 
-
-    // POST para agregar un nuevo socio
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=UTF-8"); // La respuesta sigue siendo JSON
-        PrintWriter out = response.getWriter();
+        String action = request.getParameter("action");
+        if (action == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no especificada");
+            return;
+        }
 
-        // --- CAMBIO AQUÍ: Leer los parámetros del formulario directamente como tu LibroController ---
+        switch (action) {
+            case "agregar":
+                agregarSocio(request, response);
+                break;
+            case "update":
+                actualizarSocio(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no válida");
+        }
+    }
+
+    private void agregarSocio(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
         String nombre = request.getParameter("nombre");
         String correo = request.getParameter("correo");
-        // ---------------------------------------------------------------------------------------
-
-        System.out.println("Datos recibidos: nombre=" + nombre + ", correo=" + correo);
 
         if (nombre == null || correo == null || nombre.isEmpty() || correo.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan datos (nombre o correo).");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan datos");
             return;
         }
 
         Socio socio = new Socio();
         try {
-            socio.setIdSocio(IncrementID.generateNewId(EntityType.SOCIO));
+            socio.setIdSocio(new IncrementID().generateNewId(EntityType.SOCIO));
         } catch (Exception e) {
-            // Un RuntimeException no es ideal aquí si quieres controlar el error,
-            // pero si tu LibroController usa RuntimeException, lo mantendremos por coherencia.
-            // Para una gestión más robusta de errores, un response.sendError() sería mejor.
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al generar ID de socio: " + e.getMessage());
-            e.printStackTrace(); // Imprime la traza para depuración en el servidor
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generando ID");
             return;
         }
+
         socio.setNombre(nombre);
         socio.setCorreo(correo);
 
         try {
             socioDAO.addSocio(socio);
-            response.setStatus(HttpServletResponse.SC_CREATED); // 201 Created para una creación exitosa
-            SocioDTO socioDTO = new SocioDTO(socio);
-            out.print(gson.toJson(socioDTO));
+            response.setContentType("application/json; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print(gson.toJson(new SocioDTO(socio)));
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar socio: " + e.getMessage());
-            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al guardar socio");
         }
     }
 
-    // doPut y doDelete no están incluidos por ahora, para mantener la simplicidad solicitada.
+    private void actualizarSocio(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        String id = request.getParameter("id");
+        String nombre = request.getParameter("nombre");
+        String correo = request.getParameter("correo");
+
+        if (id == null || nombre == null || correo == null || nombre.isEmpty() || correo.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan datos");
+            return;
+        }
+
+        Socio socio = new Socio();
+        socio.setIdSocio(id);
+        socio.setNombre(nombre);
+        socio.setCorreo(correo);
+
+        try {
+            boolean actualizado = socioDAO.updateSocio(socio);
+            if (actualizado) {
+                response.setContentType("application/json; charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.print(gson.toJson(new SocioDTO(socio)));
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Socio no encontrado");
+            }
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al actualizar socio");
+        }
+    }
+
+    private void eliminarSocio(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        String id = request.getParameter("id");
+        if (id == null || id.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID no especificado");
+            return;
+        }
+
+        try {
+            Socio socio = socioDAO.findById(id);
+            if (socio == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Socio no encontrado");
+                return;
+            }
+
+            boolean eliminado = socioDAO.removeSocio(id);
+            if (eliminado) {
+                response.setContentType("application/json; charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.print(gson.toJson(new SocioDTO(socio)));
+            } else {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "No se pudo eliminar el socio");
+            }
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al eliminar socio");
+        }
+    }
+
+    private void listarSocios(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        response.setContentType("application/json; charset=UTF-8");
+
+        try (PrintWriter out = response.getWriter()) {
+            List<Socio> socios = socioDAO.findAll();
+            List<SocioDTO> sociosDTO = new ArrayList<>();
+            for (Socio socio : socios) {
+                sociosDTO.add(new SocioDTO(socio));
+            }
+            out.print(gson.toJson(sociosDTO));
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al obtener socios");
+        }
+    }
 }

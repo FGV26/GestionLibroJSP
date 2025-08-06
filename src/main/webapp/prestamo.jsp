@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Préstamos - Sistema de Biblioteca</title>
-    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">

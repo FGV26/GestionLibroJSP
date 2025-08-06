@@ -1,10 +1,8 @@
-<%-- src/main/webapp/socio.jsp --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Socios</title>
-    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -18,124 +16,135 @@
 
         <hr>
 
-        <h2>Buscar Socio por ID</h2>
-        <form id="formBuscarSocio">
-            <input type="input" id="buscarIdSocio" placeholder="ID del socio" required>
-            <button type="submit">Buscar</button>
+        <h2>Actualizar Socio</h2>
+        <form id="formActualizarSocio">
+            <input type="text" id="actualizarId" placeholder="ID del socio" required>
+            <input type="text" id="nombreActualizar" placeholder="Nombre del socio" required>
+            <input type="text" id="correoActualizar" placeholder="Correo del socio" required>
+            <button type="submit">Actualizar</button>
         </form>
-        <div id="resultadoBuscarSocio" class="resultado-mensaje"></div>
+        <div id="resultadoActualizarSocio" class="resultado-mensaje"></div>
+
+        <hr>
+
+        <h2>Eliminar Socio</h2>
+        <form id="formEliminarSocio">
+            <input type="text" id="eliminarID" placeholder="ID del socio" required>
+            <button type="submit">Eliminar</button>
+        </form>
+        <div id="resultadoEliminarSocio" class="resultado-mensaje"></div>
+
+        <h2>Todos los Socios</h2>
+        <button id="btnCargarSocios">Cargar Socios</button>
+        <div id="resultadoListarSocios" class="resultado-mensaje"></div>
+        <div class="table-container">
+            <table id="tablaSocios">
+                <thead>
+                    <tr>
+                        <th>ID Socio</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <hr>
 
         <a href="home.jsp" class="back-to-home">Volver al Inicio</a>
     </div>
 
     <script>
-        // Función para limpiar y mostrar mensajes con estilos
-        function showMessage(elementId, message, type) {
-            const element = document.getElementById(elementId);
-            element.innerText = message;
-            element.className = 'resultado-mensaje ' + (type || ''); // Agrega clase para estilo (success, error, info)
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            const apiUrl = "/ProyectoBiblioteca/api/socios";
+            document.getElementById("formAgregarSocio").addEventListener("submit", agregarSocio);
+            document.getElementById("formActualizarSocio").addEventListener("submit", actulizarSocio);
+            document.getElementById("formEliminarSocio").addEventListener("submit", elimiarSocio);
+            document.getElementById("btnCargarSocios").addEventListener("click", listarSocios);
 
-        // --- Lógica para Agregar Socio ---
-        document.getElementById("formAgregarSocio").addEventListener("submit", function (e) {
-            e.preventDefault();
+            function agregarSocio(e) {
+                e.preventDefault();
+                const nombre = document.getElementById("nombreSocio").value;
+                const correo = document.getElementById("correoSocio").value;
 
-            const nombre = document.getElementById("nombreSocio").value;
-            const correo = document.getElementById("correoSocio").value;
-
-            // La URL de tu SocioController
-            const apiUrl = "/ProyectoBiblioteca/api/socios"; // <-- ¡IMPORTANTE: AJUSTA '/ProyectoBiblioteca' al contexto de tu app!
-
-            // Crear URLSearchParams para enviar datos como application/x-www-form-urlencoded
-            const formData = new URLSearchParams();
-            formData.append('nombre', nombre);
-            formData.append('correo', correo);
-
-            fetch(apiUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded" // Tipo de contenido esperado por tu SocioController
-                },
-                body: formData // Envía los datos codificados
-            })
-            .then(res => {
-                if (!res.ok) { // Si la respuesta no es 2xx OK
-                    // Intentamos leer el mensaje de error del servidor si lo envía como texto
-                    return res.text().then(errorMessage => {
-                        // Si el servidor envía un HTML de error (como el que te mostró Tomcat 500), lo capturamos
-                        if (errorMessage.startsWith("<!doctype html>")) {
-                            throw new Error("Error del servidor: " + res.status); // O un mensaje más genérico
-                        }
-                        try {
-                            // Intentar parsear como JSON si el error no es HTML (para mensajes de error JSON del controller)
-                            const errorJson = JSON.parse(errorMessage);
-                            throw new Error(errorJson.message || "Error desconocido");
-                        } catch (e) {
-                            // Si no es JSON válido, el mensaje es el texto plano
-                            throw new Error(errorMessage || res.statusText);
-                        }
-                    });
-                }
-                return res.json(); // Si la respuesta es OK (201 Created), esperamos JSON
-            })
-            .then(data => {
-                // Asumiendo que el JSON de respuesta es { "idSocio": "S001", "nombre": "...", "correo": "..." }
-                showMessage("resultadoAgregarSocio",
-                            `Socio agregado: [${data.idSocio}] - ${data.nombre} - ${data.correo}`,
-                            "success");
-                document.getElementById("formAgregarSocio").reset(); // Limpiar el formulario
-            })
-            .catch(err => {
-                showMessage("resultadoAgregarSocio", `Error al agregar socio: ${err.message}`, "error");
-                console.error("Error en la petición POST:", err);
-            });
-        });
-
-        // --- Lógica para Buscar Socio por ID ---
-        document.getElementById("formBuscarSocio").addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const id = document.getElementById("buscarIdSocio").value;
-            console.log(`Buscando socio con ID: ${id}`);
-
-            if (!id) {
-                showMessage("resultadoBuscarSocio", "Por favor, ingrese un ID de socio.", "info");
-                return;
+                fetch(apiUrl + "?action=agregar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `nombre=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showMessage("resultadoAgregarSocio", `Socio agregado: ${data.idSocio}`, "success");
+                    document.getElementById("formAgregarSocio").reset();
+                    listarSocios();
+                })
+                .catch(err => showMessage("resultadoAgregarSocio", `Error: ${err.message}`, "error"));
             }
 
-            // La URL de tu SocioController para buscar por ID
-            const apiUrl = `/ProyectoBiblioteca/api/socios?id=${id}`; // <-- ¡IMPORTANTE: AJUSTA '/ProyectoBiblioteca'!
+            function actulizarSocio(e){
+                e.preventDefault();
+                const id = document.getElementById("actualizarId").value;
+                const nombre = document.getElementById("nombreActualizar").value;
+                const correo = document.getElementById("correoActualizar").value;
 
-            fetch(apiUrl)
-            .then(res => {
-                if (res.status === 404) {
-                    throw new Error("Socio no encontrado con ese ID.");
-                }
-                if (!res.ok) { // Si la respuesta no es 2xx OK y no es 404
-                    return res.text().then(errorMessage => {
-                         if (errorMessage.startsWith("<!doctype html>")) {
-                            throw new Error("Error del servidor: " + res.status);
+                fetch(apiUrl + "?action=update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `id=${encodeURIComponent(id)}&nombre=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showMessage("resultadoActualizarSocio", `Socio actualizado: ${data.idSocio}`, "success");
+                    listarSocios();
+                })
+                .catch(err => showMessage("resultadoActualizarSocio", `Error: ${err.message}`, "error"));
+            }
+
+            function elimiarSocio(e){
+                e.preventDefault();
+                const id = document.getElementById("eliminarID").value;
+
+                fetch(apiUrl + `?action=delete&id=${encodeURIComponent(id)}`, {
+                    method: "GET"
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showMessage("resultadoEliminarSocio", `Socio eliminado: ${data.idSocio}`, "success");
+                    listarSocios();
+                })
+                .catch(err => showMessage("resultadoEliminarSocio", `Error: ${err.message}`, "error"));
+            }
+
+            function listarSocios() {
+                const tbody = document.querySelector("#tablaSocios tbody");
+                tbody.innerHTML = '';
+                fetch(apiUrl + "?action=ListarTodo")
+                    .then(res => res.json())
+                    .then(socios => {
+                        if (socios.length === 0) {
+                            showMessage("resultadoListarSocios", "No hay socios registrados.", "info");
+                            return;
                         }
-                        try {
-                            const errorJson = JSON.parse(errorMessage);
-                            throw new Error(errorJson.message || "Error desconocido");
-                        } catch (e) {
-                            throw new Error(errorMessage || res.statusText);
-                        }
-                    });
-                }
-                return res.json(); // Si la respuesta es OK, esperamos JSON
-            })
-            .then(data => {
-                // Asumiendo que el JSON de respuesta es { "idSocio": "S001", "nombre": "...", "correo": "..." }
-                showMessage("resultadoBuscarSocio",
-                            `Socio encontrado: [${data.idSocio}] ${data.nombre} - ${data.correo}`,
-                            "success");
-            })
-            .catch(err => {
-                showMessage("resultadoBuscarSocio", `${err.message}`, "error");
-                console.error("Error en la petición GET:", err);
-            });
+
+                        socios.forEach(s => {
+                            const row = tbody.insertRow();
+                            row.insertCell().innerText = s.idSocio;
+                            row.insertCell().innerText = s.nombre;
+                            row.insertCell().innerText = s.correo;
+                        });
+                        showMessage("resultadoListarSocios", `Socios cargados: ${socios.length}`, "success");
+                    })
+                    .catch(err => showMessage("resultadoListarSocios", `Error: ${err.message}`, "error"));
+            }
+
+            function showMessage(id, message, type = '') {
+                const el = document.getElementById(id);
+                el.innerText = message;
+                el.className = 'resultado-mensaje ' + type;
+                setTimeout(() => { el.innerText = ""; }, 3000);
+            }
+
+            listarSocios();
         });
     </script>
 </body>
