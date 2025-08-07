@@ -1,0 +1,162 @@
+# Crear un Swagger/OpenAPI para el proyecto de biblioteca
+# Este archivo define las rutas, parámetros y respuestas de la API REST
+# Como trabajo con servelt y no con Spring Boot, lo tube que hacer manualmente
+
+openapi: 3.0.0
+info:
+  title: API - Proyecto Biblioteca
+  version: 1.0.0
+  description: API REST para gestionar Libros y Socios en el sistema de biblioteca
+
+servers:
+  - url: http://localhost:8080/ProyectoBiblioteca
+    description: Servidor local de desarrollo
+
+paths:
+  /api/libros:
+    get:
+      summary: Listar todos los libros
+      parameters:
+        - in: query
+          name: action
+          required: true
+          schema:
+            type: string
+            enum: [ListarTodo]
+      responses:
+        '200':
+          description: Lista de libros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Libro'
+        '400':
+          description: Error al listar libros
+
+    post:
+      summary: Agregar libro
+      parameters:
+        - in: query
+          name: action
+          required: true
+          schema:
+            type: string
+            enum: [Agregar]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                autor:
+                  type: string
+      responses:
+        '200':
+          description: Libro agregado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Libro'
+        '400':
+          description: Error al agregar libro
+
+  /api/socios:
+    get:
+      summary: Eliminar socio
+      parameters:
+        - in: query
+          name: action
+          required: true
+          schema:
+            type: string
+            enum: [delete]
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Socio eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+        '400':
+          description: Error al eliminar socio
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    post:
+      summary: Actualizar socio
+      parameters:
+        - in: query
+          name: action
+          required: true
+          schema:
+            type: string
+            enum: [Actualizar]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                nombre:
+                  type: string
+                apellido:
+                  type: string
+      responses:
+        '200':
+          description: Socio actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Socio'
+        '400':
+          description: Error al actualizar socio
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+components:
+  schemas:
+    Libro:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+        autor:
+          type: string
+
+    Socio:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        apellido:
+          type: string

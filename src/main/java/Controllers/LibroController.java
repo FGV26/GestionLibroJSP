@@ -40,7 +40,7 @@ public class LibroController extends HttpServlet {
                 listarLibros(request, response);
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no válida");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no válida"); //400
         }
     }
 
